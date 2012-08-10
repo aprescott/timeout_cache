@@ -1,0 +1,4 @@
+*~
+/docs
+/timeout_cache-*.gem
+Gemfile.lock

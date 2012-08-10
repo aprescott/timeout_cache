@@ -1,0 +1,26 @@
+require "rake"
+require "rdoc/task"
+require "rspec/core/rake_task"
+
+$:.unshift(File.expand_path("lib", __FILE__))
+require "timeout_cache"
+
+RSpec::Core::RakeTask.new(:test) do |t|
+  t.rspec_opts = "-I test --color --format nested"
+  t.pattern = "test/**/*_spec.rb"
+  t.verbose = false
+  t.fail_on_error = true
+end
+
+task :doc => [:docs]
+
+Rake::RDocTask.new(:docs) do |rd|
+  #rd.main = "docs/README.md"
+  rd.main = "" # I'm broken, fix me
+  rd.rdoc_dir = "docs"
+  rd.title = "TimeoutCache #{TimeoutCache::VERSION}"
+  rd.options << '--line-numbers' << '--inline-source'
+  rd.rdoc_files.include("README.md", "lib")
+end
+
+task :default => :test
