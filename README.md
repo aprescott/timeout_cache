@@ -2,6 +2,10 @@
 
 A `TimeoutCache` is a simple cache where objects are stored with a fixed expiration time. It is useful when you want to keep an object around for a sufficiently long period of time, but want them to disappear after, say, 5 seconds, or on the first day of next month.
 
+```
+gem install timeout_cache
+```
+
 # How do I use this thing?
 
 A `TimeoutCache` is easy to use.
