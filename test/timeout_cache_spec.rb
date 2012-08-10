@@ -1,7 +1,18 @@
 require "timeout_cache"
 require "rspec"
+require "timecop"
 
 describe TimeoutCache do
+  def sleep(n)
+    Timecop.travel(Time.now + n)
+  end
+  
+  after :all do
+    # If we don't return, the runtime for the tests makes it seem like
+    # we had actually slept!
+    Timecop.return
+  end
+
   it "uses the global default timeout with no time specified" do
     subject.timeout.should == TimeoutCache::DEFAULT_TIMEOUT
   end
