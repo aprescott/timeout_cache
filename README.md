@@ -47,7 +47,11 @@ Unless an object is added to the cache using the `:time` option, the default is 
 
 # Entry deletion and pruning
 
-Expired entries are deleted lazily. If an entry is added with an expire time of 15 seconds and nothing touches the cache, the entry will still be in the cache after 20 seconds. Expired entries are deleted only when a call to `#[]` (or, equivalently, `#get`) finds an expired entry. At that point, `#prune` is called.
+Expired entries are deleted lazily to try and avoid to cost of excessively pruning. If an entry is added with an expire time of 15 seconds and nothing touches the cache, the entry will still be in the cache after 20 seconds. Expired entries are deleted when certain methods are called:
+
+* `#[]` (or, equivalently, `#get`) provided that the entry being retrieved has expired
+* `#size`
+* `#empty?`
 
 If you want to manually prune the cache, you may do so by calling `#prune`.
 

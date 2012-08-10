@@ -153,6 +153,12 @@ describe TimeoutCache do
         subject[:a] = 1
         subject.size.should_not == 0
     end
+    
+    it "ignores expired entries" do
+      subject.set(:a, :b, :time => 1)
+      sleep 2
+      subject.size.should == 0
+    end
   end
   
   describe "pruning" do
@@ -160,18 +166,26 @@ describe TimeoutCache do
       subject.set(:a, 1, :time => 2)
       subject.set(:b, 1, :time => 2)
       sleep 3
-      subject.size.should == 2
+      subject.should_receive(:prune)
       subject.get(:a)
-      subject.size.should == 0
     end
 
     it "does not happen when calling #get(key) when get(key) is not expired" do
       subject.set(:a, 1, :time => 200)
       subject.set(:b, 1, :time => 2)
       sleep 3
-      subject.size.should == 2
+      subject.should_not_receive(:prune)
       subject.get(:a)
-      subject.size.should == 2
+    end
+    
+    it "happens on #size call" do
+      subject.should_receive(:prune)
+      subject.size
+    end
+    
+    it "happens on an #empty? call" do
+      subject.should_receive(:prune)
+      subject.empty?
     end
   end
   

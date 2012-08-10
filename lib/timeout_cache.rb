@@ -55,8 +55,9 @@ class TimeoutCache
     @store = {}
   end
   
-  # Returns the number of items in the cache.
+  # Calls #prune and then returns the number of items in the cache.
   def size
+    prune
     @store.size
   end
   alias_method :length, :size
@@ -65,8 +66,7 @@ class TimeoutCache
   # then this returns nil. If the value has an expire time earlier than or equal
   # to the current time, this returns nil.
   #
-  # As an implementation detail, this method calls #prune whenever it finds
-  # an element that has expired.
+  # This method calls #prune whenever it finds an element that has expired.
   def [](key)
     val = @store[key]
     
@@ -135,8 +135,9 @@ class TimeoutCache
     value
   end
   
-  # Returns true if the cache is empty, otherwise false.
+  # Calls #prune and then returns true if the cache is empty, otherwise false.
   def empty?
+    prune
     @store.empty?
   end
   
@@ -153,7 +154,7 @@ class TimeoutCache
   # If nothing was removed, returns nil, otherwise returns
   # the number of elements removed.
   def prune
-    return nil if empty?
+    return nil if @store.empty?
     
     count = 0
     
