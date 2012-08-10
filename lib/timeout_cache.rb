@@ -13,7 +13,7 @@
 #     cache[:foo] #=> nil
 #
 class TimeoutCache
-  VERSION = "0.0.1"
+  VERSION = "0.0.2"
   
   # Wraps an object by attaching a time to it.
   class TimedObject # :nodoc:
