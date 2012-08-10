@@ -38,12 +38,15 @@ class TimeoutCache
   
   # Creates a new TimeoutCache.
   #
-  # If <tt>timeout</tt> is specified, the default survival time for
-  # a cache entry is <tt>timeout</tt> in seconds.
+  # If <tt>timeout</tt> is specified, #to_int is called on the argument,
+  # and the return value is used as the default survival time for
+  # a cache entry in seconds.
   #
   # If no default value is used, then DEFAULT_TIMEOUT is the default
   # time-to-expire in seconds.
   def initialize(timeout = DEFAULT_TIMEOUT)
+    timeout = timeout.to_int if timeout.respond_to?(:to_int)
+    
     raise ArgumentError.new("Timeout must be > 0") unless timeout > 0
     
     @timeout = timeout
@@ -103,12 +106,26 @@ class TimeoutCache
   def set(key, value, options = {})
     time = options[:time] || timeout
     
+    # we can technically do away with checking against Integer explicitly since
+    # the to_int call will take care of it for us through Integer#to_int returning
+    # self, but it's here for the sake of clarity, mostly.
+    #
+    # on the other hand, the #to_time call is necessary, since, for some reason,
+    # Time#to_time only exists if you require "time".
     time = case time
            when Integer
              Time.now + time
            when Time
              time
+           else
+             if time.respond_to?(:to_int)
+               Time.now + time.to_int
+             elsif time.respond_to?(:to_time)
+               time.to_time
+             end
            end
+    
+    raise(ArgumentError, "time argument #{time.inspect} could not be converted to a time") if time.nil?
     
     return nil if time <= Time.now
     

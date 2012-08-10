@@ -10,6 +10,17 @@ describe TimeoutCache do
     TimeoutCache.new(50).timeout.should == 50
   end
   
+  it "can be instantiated with anything that responds to to_int" do
+    x = double("")
+    x.should_receive(:to_int).and_return(2)
+    
+    c = TimeoutCache.new(x)
+    c[:a] = :b
+    c[:a].should == :b
+    sleep 3
+    c[:a].should be_nil
+  end
+  
   it "cannot be instantiated with a global timeout <= 0" do
     [0, -1, -5].each do |i|
       expect { TimeoutCache.new(i) }.to raise_error(ArgumentError)
@@ -28,6 +39,32 @@ describe TimeoutCache do
       t = Time.now + 10
       subject.set(:a, 1, :time => t)
       subject.expire_time(:a).should == t
+    end
+    
+    context "if the :time value is neither a Time nor an Integer" do
+      it "accepts any object which responds to #to_time" do
+        s = double("")
+        s.should_receive(:to_time).and_return(Time.now + 2)
+        
+        subject.set(:a, 5, :time => s)
+        subject[:a].should_not be_nil
+        sleep 3
+        subject[:a].should be_nil
+      end
+      
+      it "accepts any object which responds to #to_int" do
+        s = double("")
+        s.should_receive(:to_int).any_number_of_times.and_return(2)
+        
+        subject.set(:a, 5, :time => s)
+        subject[:a].should_not be_nil
+        sleep(s.to_int + 1)
+        subject[:a].should be_nil
+      end
+      
+      it "throws ArgumentError if it can't get a time out of it" do
+        expect { subject.set(:a, :b, :time => "not a time") }.to raise_error(ArgumentError)
+      end
     end
     
     # here be dragons. if it takes too long to execute these

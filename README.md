@@ -35,6 +35,8 @@ You can also use an instance of `Time`:
 cache.set(:x, :y, :time => Time.now + 50)
 ```
 
+You can use any object as the value for `:time` provided it is an `Integer`, a `Time`, has a `to_int` method, or has a `to_time` method.
+
 If you want to change the default expiration time, do so when you make a new instance of `TimeoutCache` by passing the length of time in seconds.
 
 ```ruby
