@@ -6,7 +6,7 @@ $:.unshift(File.expand_path("lib", __FILE__))
 require "timeout_cache"
 
 RSpec::Core::RakeTask.new(:test) do |t|
-  t.rspec_opts = "-I test --color --format nested"
+  t.rspec_opts = "-I test --color"
   t.pattern = "test/**/*_spec.rb"
   t.verbose = false
   t.fail_on_error = true
