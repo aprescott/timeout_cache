@@ -23,4 +23,13 @@ Rake::RDocTask.new(:docs) do |rd|
   rd.rdoc_files.include("README.md", "lib")
 end
 
+namespace :gem do
+  desc "Build the gem from the .gemspec"
+  task :build do
+    sh("gem build timeout_cache.gemspec")
+    puts
+    puts "You can push with gem push <built-gem>.gem"
+  end
+end
+
 task :default => :test
