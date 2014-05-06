@@ -77,5 +77,3 @@ The official repository is on GitHub at [aprescott/timeout_cache](https://github
 * Run all the tests
 * Push you branch to your GitHub repository
 * Send a pull request
-
-Your contribution will be assumed to also be licensed under the MIT license.
